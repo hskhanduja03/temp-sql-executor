@@ -1,0 +1,40 @@
+:root {
+    --bg: #ffffff;
+    --text: #333;
+    --border: #ddd;
+    --sidebar-bg: #f8f9fa;
+    --table-header: #f1f1f1;
+  }
+  
+  [data-theme="dark"] {
+    --bg: #1e1e1e;
+    --text: #ffffff;
+    --border: #444;
+    --sidebar-bg: #2c2c2c;
+    --table-header: #3a3a3a;
+  }
+  
+  [data-theme="subtle-dark-purple"] {
+    --bg: #1a152e;
+    --text: #e6e1ff;
+    --border: #5a4b8a;
+    --sidebar-bg: #2b1f47;
+    --table-header: #3c2a69;
+  }
+  
+  [data-theme="github-grey"] {
+    --bg: #0d1117;
+    --text: #c9d1d9;
+    --border: #30363d;
+    --sidebar-bg: #161b22;
+    --table-header: #21262d;
+  }
+  
+  [data-theme="dracula"] {
+    --bg: #282a36;
+    --text: #f8f8f2;
+    --border: #6272a4;
+    --sidebar-bg: #44475a;
+    --table-header: #6272a4;
+  }
+  

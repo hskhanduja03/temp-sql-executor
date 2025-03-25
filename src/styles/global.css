@@ -1,0 +1,212 @@
+body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  /* Layout */
+  .container {
+    display: flex;
+    height: 100vh;
+  }
+  
+
+
+.invisible{
+  display: none;
+  transform: all 0.5s ease-in;
+}
+
+/* Sidebar Collapse Button */
+.collapseBtn {
+  border: 1px solid transparent; /* Keeps size consistent */
+  background: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.collapseBtn:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.collapseBtn:hover {
+  border: 1px solid #2563eb; /* Adds a visible blue border */
+  background-color: rgba(37, 99, 235, 0.1); /* Subtle blue background */
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  background-color: var(--sidebar-bg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  max-height: 100vh;
+  transition: width 0.4s ease-in;
+  white-space: nowrap; 
+}
+
+/* Collapsed Sidebar */
+.sidebar.collapsed {
+  width: 50px; /* Shrinks the sidebar */
+}
+
+/* Sidebar Logo */
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Sidebar Title */
+.sidebar-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2563eb;
+  transition: opacity 0.3s ease;
+}
+
+.hidden-title {
+  opacity: 0;
+  pointer-events: none;
+  display: none;
+}
+
+/* Sidebar Links */
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Sidebar Link */
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  font-size: 1rem;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 8px;
+  position: relative; /* Needed for tooltip */
+  transition: all 0.3s ease;
+}
+
+/* Hover effect */
+.sidebar-link:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* Active link style */
+.sidebar-link.active {
+  background-color: #e7f0ff;
+  font-weight: 600;
+}
+
+/* When collapsed, hide text but show on hover */
+.sidebar.collapsed .sidebar-text {
+  display: none;
+}
+
+/* Floating Tooltip Effect */
+.sidebar.collapsed .sidebar-link:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 60px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  font-size: .8rem;
+  transform: translateY(-50%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-link:hover::after {
+  opacity: 1;
+}
+/* When sidebar is collapsed, hide text */
+.sidebar.collapsed .sidebar-link span {
+  display: none;
+  position: absolute;
+  left: 100%;
+  background-color: var(--sidebar-bg);
+  color: var(--text);
+  font-size: small;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Show text on hover */
+.sidebar.collapsed .sidebar-link:hover span {
+  display: block;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+
+
+
+
+/* Theme Toggle */
+.theme-toggle {
+  margin-top: auto; /* Pushes it to bottom */
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+  
+  /* Query Editor */
+  .query-editor {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .query-box {
+    width: 100%;
+    height: 200px;
+    border: 1px solid var(--border);
+    padding: 10px;
+    font-family: monospace;
+    font-size: 14px;
+  }
+  
+  /* Query Results */
+  .results {
+    margin-top: 20px;
+  }
+  
+  .table-container {
+    width: 100%;
+    border: 1px solid var(--border);
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th, td {
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  th {
+    background-color: var(--table-header);
+  }
+  
