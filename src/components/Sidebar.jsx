@@ -27,7 +27,7 @@ const links = [
   { to: "/advanced", icon: <Zap size={20} />, text: "Advanced Queries" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ collapsed, setCollapsed }) => {
   const [expanded, setExpanded] = useState(true);
 
   return (
@@ -38,7 +38,10 @@ const Sidebar = () => {
           SQL Runner
         </p>
         <button
-          onClick={() => setExpanded((curr) => !curr)}
+          onClick={() => {
+            setExpanded((curr) => !curr)
+            setCollapsed(!collapsed)
+          }}
           className="collapseBtn"
         >
           {expanded ? <ChevronFirst /> : <ChevronLast />}

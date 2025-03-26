@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import Sidebar from "../components/Sidebar";
+import QueryEditor from "../components/QueryEditor";
 
 const Dashboard = () => {
-  const [queryFile, setQueryFile] = useState("/orders.csv");
 
   return (
-    <div className="container">
-      <Sidebar />
+    <div className="dashboard">
+        <QueryEditor />
     </div>
   );
 };
