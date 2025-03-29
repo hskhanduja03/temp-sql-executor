@@ -849,7 +849,7 @@ Button:focus {
     #ff9800
   );
   background-size: 400%;
-  text-align: center;
+  /* text-align: center; */
   margin: 0 auto;
   position: relative;
   color: #fff;
@@ -874,7 +874,7 @@ Button:focus {
 }
 
 .button-anon-pen.expanded {
-  width: 90%;
+  width: 95%;
   font-size: 14px;
   padding: 2px;
 }
@@ -893,6 +893,7 @@ Button:focus {
   font-size: 18px;
   display: block;
   margin: 3px;
+  padding: 10px 5px 10px 5px;
   background: rgb(255, 255, 255);
   border-radius: 3px;
   transition: all 0.3s ease-in-out;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -18,6 +18,8 @@ import {
   CopyCheck,
   Share2,
 } from "lucide-react";
+import { useQueryHistory } from "../Context/QueryHistoryContext";
+import { useSearchParams } from "react-router-dom";
 
 const QueryEditor = () => {
   const monaco = useMonaco();
@@ -52,6 +54,20 @@ Where happy = 'active'
   const [message, setMessage] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
   const [sharing, setSharing] = useState(false);
+
+  const { history, setHistory } = useQueryHistory();
+  const [searchParams] = useSearchParams();
+  const queryParam = searchParams.get("query");
+  const queryName = searchParams.get("name");
+
+  useEffect(() => {
+    if (queryParam) {
+      addNewTabHistory(queryParam, queryName)
+      setTimeout(() => {
+        runQuery()
+      }, 500);
+    }
+  }, [queryParam]);
 
   React.useEffect(() => {
     if (monaco) {
@@ -89,6 +105,18 @@ Where happy = 'active'
     setTimeout(() => {
       // After 1s, execute query and update state
       const query = tabs.find((tab) => tab.id === activeTab)?.query;
+
+      // Save in history
+      const activeTabData = tabs.find((tab) => tab.id === activeTab);
+      if (!activeTabData) return;
+      const newHistoryEntry = {
+        tabName: activeTabData.filename,
+        query: activeTabData.query,
+        timestamp: new Date().toLocaleString(),
+      };
+
+      setHistory((prev) => [...prev, newHistoryEntry]);
+
       let mockResponse = [];
 
       if (activeTab === 1)
@@ -118,7 +146,18 @@ Where happy = 'active'
     const newTab = {
       id: tabs.length + 1,
       filename: `Query${tabs.length + 1}.sql`,
-      query: "SELECT * FROM table_name;",
+      query: `SELECT * FROM table_name;`,
+      result: null,
+    };
+    setTabs([...tabs, newTab]);
+    setActiveTab(newTab.id);
+  };
+
+  const addNewTabHistory = (query, name) => {
+    const newTab = {
+      id: tabs.length + 1,
+      filename: name,
+      query: query,
       result: null,
     };
     setTabs([...tabs, newTab]);
@@ -213,6 +252,23 @@ Where happy = 'active'
           theme: "light",
         });
       });
+  };
+
+  const editorRef = useRef(null); // Reference for the editor
+
+  useEffect(() => {
+    // Focusing editor on mount
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+  }, []);
+
+  const handleKeyDown = (e) => {
+    // Executing query with Ctrl+Enter
+    if (e.ctrlKey && e.key === "Enter") {
+      e.preventDefault();
+      runQuery();
+    }
   };
 
   return (
@@ -393,7 +449,10 @@ Where happy = 'active'
                 <div className="tooltip-container">
                   <Info size={19} className="editor-info" />
                   <div className="tooltip-text">
-                    Run the query to fetch results.
+                    <b>
+                      <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                    </b>
+                    &nbsp; to run the query 🚀{" "}
                   </div>
                 </div>
                 {queryExecuted && (
@@ -568,6 +627,16 @@ Where happy = 'active'
               lineNumbers: "on",
               folding: true,
             }}
+            onMount={(editor, monaco) => {
+              editorRef.current = editor; // Save editor instance
+
+              editor.addCommand(
+                monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter,
+                () => {
+                  runQuery(); // Execute query when Ctrl + Enter is pressed
+                }
+              );
+            }}
           />
 
           <div className="query-editor-bottom">
@@ -575,7 +644,10 @@ Where happy = 'active'
               <div className="tooltip-container">
                 <Info size={19} className="editor-info" />
                 <div className="tooltip-text">
-                  Run the query to fetch results.
+                  <b>
+                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd>
+                  </b>
+                  &nbsp; to run the query 🚀{" "}
                 </div>
               </div>
               {queryExecuted && (

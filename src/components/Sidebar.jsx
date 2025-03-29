@@ -11,6 +11,8 @@ import {
   Zap,
   FileSearch2,
   Eye,
+  History,
+  LibraryBig,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -19,12 +21,10 @@ const bottomLinks = [
   { to: "/profile", icon: <UserRoundPen size={20} />, text: "Profile" },
 ];
 const links = [
-  { to: "/", icon: <FileText size={20} />, text: "All Queries" },
-  { to: "/select", icon: <FileSearch2 size={20} />, text: "SELECT Queries" },
-  { to: "/insert", icon: <Plus size={20} />, text: "INSERT Queries" },
-  { to: "/update", icon: <ArrowLeftRight size={20} />, text: "UPDATE Queries" },
+  { to: "/", icon: <FileText size={20} />, text: "Query Editor" },
   { to: "/preview", icon: <Eye size={20} />, text: "Preview File" },
-  { to: "/advanced", icon: <Zap size={20} />, text: "Advanced Queries" },
+  { to: "/library", icon: <LibraryBig size={20} />, text: "Query Library" },
+  { to: "/history", icon: <History size={20} />, text: "Query History" },
 ];
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
@@ -66,7 +66,7 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
           href="#"
           className={`button-anon-pen ${expanded ? "expanded" : "collapsed"}`}
         >
-          {expanded ? <span>AI Insights ✨</span> : <span>✨</span>}
+          {expanded ? <span>✨ AI Insights</span> : <span>✨</span>}
         </p>
       </nav>
       {/* Bottom Links */}
