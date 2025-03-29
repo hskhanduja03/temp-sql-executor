@@ -20,9 +20,11 @@ import {
 } from "lucide-react";
 import { useQueryHistory } from "../Context/QueryHistoryContext";
 import { useSearchParams } from "react-router-dom";
+import { useQueryLibraryContext } from "../Context/QueryLibraryContext";
 
 const QueryEditor = () => {
   const monaco = useMonaco();
+  const { addQuery } = useQueryLibraryContext();
   const [tabs, setTabs] = useState([
     {
       id: 1,
@@ -63,9 +65,6 @@ Where happy = 'active'
   useEffect(() => {
     if (queryParam) {
       addNewTabHistory(queryParam, queryName)
-      setTimeout(() => {
-        runQuery()
-      }, 500);
     }
   }, [queryParam]);
 
@@ -185,6 +184,32 @@ Where happy = 'active'
 
   // ✅ Handle Save Query - Show Success Toast
   const handleSaveQuery = () => {
+    const activeTabData = tabs.find((tab) => tab.id === activeTab);
+    if (!activeTabData?.query.trim()) {
+        toast.error("Query cannot be empty!", { position: "top-center" });
+        return;
+    }
+
+    // ✅ Use prompt() to get user input
+    const name = prompt("Enter query name", activeTabData.filename);
+    const description = prompt("Enter query description", "Custom saved query");
+
+    if (!name) {
+        toast.error("Query name is required!", { position: "top-center" });
+        return;
+    }
+
+    const newQuery = {
+        id: Date.now(),
+        title: name,
+        description: description || "Custom saved query",
+        query: activeTabData.query,
+        lastRun: new Date().toLocaleString(),
+    };
+    
+
+    addQuery(newQuery); 
+    
     toast.success("Query saved successfully!", {
       position: "top-center",
       autoClose: 3000,
@@ -262,14 +287,6 @@ Where happy = 'active'
       editorRef.current.focus();
     }
   }, []);
-
-  const handleKeyDown = (e) => {
-    // Executing query with Ctrl+Enter
-    if (e.ctrlKey && e.key === "Enter") {
-      e.preventDefault();
-      runQuery();
-    }
-  };
 
   return (
     <>

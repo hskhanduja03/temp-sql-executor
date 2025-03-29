@@ -1,0 +1,162 @@
+/* Query Library Container */
+.qlib-container {
+    padding: 20px;
+    font-family: "Arial", sans-serif;
+  }
+  
+  .qlib-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  /* Project Tabs */
+  .qlib-project-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  .qlib-project-tab {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    background: #e5e7eb;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  
+  .qlib-project-tab.qlib-active {
+    background: #2563eb;
+    color: white;
+  }
+  
+  /* Query Grid */
+  .qlib-query-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 15px;
+  }
+  
+  /* Query Card */
+  .qlib-query-card {
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    transition: 0.3s;
+  }
+  
+  .qlib-query-card:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Query Colors */
+  .qlib-blue {
+    border-left: 5px solid #3b82f6;
+    background: #eff6ff;
+  }
+  
+  .qlib-green {
+    border-left: 5px solid #22c55e;
+    background: #ecfdf5;
+  }
+  
+  .qlib-purple {
+    border-left: 5px solid #a855f7;
+    background: #faf5ff;
+  }
+  
+  .qlib-red {
+    border-left: 5px solid #f43f5e;
+    background: #fef2f2;
+  }
+  
+  /* Query Header */
+  .qlib-query-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .qlib-query-tag {
+    background: #d1d5db;
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  
+  /* Query Description */
+  .qlib-query-description {
+    font-size: 14px;
+    color: #374151;
+    margin: 5px 0;
+  }
+  
+  /* Query Code */
+  .qlib-query-code {
+    background: #f3f4f6;
+    padding: 10px;
+    max-height: 20vh;
+    overflow: auto;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: "Courier New", monospace;
+    white-space: pre-wrap;
+  }
+  
+  /* Query Footer */
+  .qlib-query-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .qlib-last-run {
+    font-size: 12px;
+    color: #6b7280;
+  }
+  
+  /* Query Actions */
+  .qlib-query-actions {
+    display: flex;
+    gap: 5px;
+  }
+  
+  .qlib-query-actions button {
+    border: none;
+    padding: 5px 8px;
+    font-size: 13px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .qlib-copy-btn {
+    background: #22c55e;
+    color: white;
+  }
+  
+  .qlib-edit-btn {
+    background: #facc15;
+  }
+  
+  .qlib-delete-btn {
+    background: #f43f5e;
+    color: white;
+  }
+  
+  .qlib-query-actions button:hover {
+    opacity: 0.8;
+  }
+  
+  .qlib-edit-textarea {
+    width: 95%;
+    height: 100px;
+    font-size: 14px;
+    padding: 8px;
+    border: 1px solid #b2b0b0;
+    border-radius: 5px;
+    resize: vertical;
+  }

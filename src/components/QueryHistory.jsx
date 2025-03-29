@@ -16,7 +16,7 @@ const QueryHistory = () => {
       <h2 className="query-history-title">Query History</h2>
 
       <div className="query-tabs">
-        <button className="tab active">Recently Used</button>
+        <button className="tab active">Recently Executed</button>
       </div>
 
       <div className="query-list">
