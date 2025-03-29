@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import QueryEditor from "../components/QueryEditor";
+import PreviewTable from "../components/PreviewTable";
 
-const Dashboard = () => {
+const Dashboard = ({Component}) => {
 
   return (
     <div className="dashboard">
-        <QueryEditor />
+      {Component}
     </div>
   );
 };

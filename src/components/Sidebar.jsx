@@ -6,11 +6,11 @@ import {
   ChevronLast,
   ChevronFirst,
   ArrowLeftRight,
-  Trash2,
   Settings,
   UserRoundPen,
   Zap,
   FileSearch2,
+  Eye,
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
@@ -23,7 +23,7 @@ const links = [
   { to: "/select", icon: <FileSearch2 size={20} />, text: "SELECT Queries" },
   { to: "/insert", icon: <Plus size={20} />, text: "INSERT Queries" },
   { to: "/update", icon: <ArrowLeftRight size={20} />, text: "UPDATE Queries" },
-  { to: "/delete", icon: <Trash2 size={20} />, text: "DELETE Queries" },
+  { to: "/preview", icon: <Eye size={20} />, text: "Preview File" },
   { to: "/advanced", icon: <Zap size={20} />, text: "Advanced Queries" },
 ];
 
@@ -39,8 +39,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
         </p>
         <button
           onClick={() => {
-            setExpanded((curr) => !curr)
-            setCollapsed(!collapsed)
+            setExpanded((curr) => !curr);
+            setCollapsed(!collapsed);
           }}
           className="collapseBtn"
         >
@@ -62,8 +62,13 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             <span className="sidebar-text">{link.text}</span>
           </NavLink>
         ))}
+        <p
+          href="#"
+          className={`button-anon-pen ${expanded ? "expanded" : "collapsed"}`}
+        >
+          {expanded ? <span>AI Insights ✨</span> : <span>✨</span>}
+        </p>
       </nav>
-
       {/* Bottom Links */}
       <div className="theme-toggle">
         {bottomLinks.map((link, index) => (
@@ -78,6 +83,8 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
             <span className="sidebar-text">{link.text}</span>
           </NavLink>
         ))}
+        {/* <button className="tempbutton">Get Started</button> */}
+
         {/* <ThemeToggle /> */}
       </div>
     </div>
