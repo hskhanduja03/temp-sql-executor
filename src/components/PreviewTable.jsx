@@ -1,28 +1,28 @@
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
-import ordersCSV from "../data/orders.csv"; // Default CSV file for initial data loading
-import { saveAs } from "file-saver"; // Utility for exporting data as files
-import { Download } from "lucide-react"; // Icon component for download buttons
+import ordersCSV from "../data/orders.csv"; // Default CSV
+import { saveAs } from "file-saver"; // For exporting JSON
+import { Download } from "lucide-react";
 
 export default function PreviewTable() {
-  const [data, setData] = useState([]); // Stores complete CSV data
-  const [filteredData, setFilteredData] = useState([]); // Stores filtered results based on search
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "none",
-  }); // Handles sorting configurations
-  const [searchQuery, setSearchQuery] = useState(""); // Search query state
-  const [pageIndex, setPageIndex] = useState(0); // Current page index for pagination
-  const [selectedFile, setSelectedFile] = useState("Orders.csv"); // Stores name of uploaded file
-  const pageSize = 5; // Number of records per page
+  });
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageIndex, setPageIndex] = useState(0);
+  const [selectedFile, setSelectedFile] = useState("Orders.csv");
+  const pageSize = 5;
 
   useEffect(() => {
     fetch(ordersCSV)
       .then((res) => res.text())
-      .then((text) => parseCSV(text)); // Load and parse CSV on component mount
+      .then((text) => parseCSV(text));
   }, []);
 
-  // Parses CSV data into JSON format
+  //To parse 
   const parseCSV = (csvText) => {
     Papa.parse(csvText, {
       header: true,
@@ -30,12 +30,11 @@ export default function PreviewTable() {
       complete: (result) => {
         setData(result.data);
         setFilteredData(result.data);
-        setPageIndex(0); // Reset pagination after new data load
+        setPageIndex(0);
       },
     });
   };
 
-  // Handles sorting logic for table columns
   const handleSort = (key) => {
     setSortConfig((prev) => {
       let newDirection = "asc";
@@ -47,7 +46,6 @@ export default function PreviewTable() {
     });
   };
 
-  // Sorts data based on selected column and direction
   const sortedData = [...filteredData].sort((a, b) => {
     if (!sortConfig.key || sortConfig.direction === "none") return 0;
     return sortConfig.direction === "asc"
@@ -60,17 +58,15 @@ export default function PreviewTable() {
   });
 
   useEffect(() => {
-    // Filters data based on search query
     const filtered = data.filter((row) =>
       Object.values(row).some((val) =>
         val?.toString().toLowerCase().includes(searchQuery.toLowerCase())
       )
     );
     setFilteredData(filtered);
-    setPageIndex(0); // Reset pagination when filtering
+    setPageIndex(0);
   }, [searchQuery, data]);
 
-  // Handles file upload and parses new CSV file
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -81,29 +77,27 @@ export default function PreviewTable() {
     }
   };
 
-  // Gets paginated data for current page
   const paginatedData = sortedData.slice(
     pageIndex * pageSize,
     (pageIndex + 1) * pageSize
   );
 
-  // Exports filtered data as CSV file
+  // Export CSV
   const exportCSV = () => {
     const csv = Papa.unparse(filteredData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "filtered_data.csv");
   };
 
-  // Exports filtered data as JSON file
+  // Export JSON
   const exportJSON = () => {
     const json = JSON.stringify(filteredData, null, 2);
     const blob = new Blob([json], { type: "application/json" });
     saveAs(blob, "filtered_data.json");
   };
 
-  const totalPages = Math.ceil(filteredData.length / pageSize); // Total number of pages
+  const totalPages = Math.ceil(filteredData.length / pageSize);
 
-  // Generates pagination numbers dynamically
   const getPaginationNumbers = () => {
     const pageNumbers = [];
     const maxVisiblePages = 2; 
@@ -213,7 +207,46 @@ export default function PreviewTable() {
             </tbody>
           </table>
         </div>
+
+        <div className="pagination">
+          <button
+            className="pagination-btn"
+            onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
+            disabled={pageIndex === 0}
+          >
+            Prev
+          </button>
+
+          {getPaginationNumbers().map((num, index) =>
+            num === "..." ? (
+              <span key={index} className="pagination-dots">
+                ...
+              </span>
+            ) : (
+              <button
+                key={index}
+                className={`pagination-btn ${
+                  pageIndex === num - 1 ? "active" : ""
+                }`}
+                onClick={() => setPageIndex(num - 1)}
+              >
+                {num}
+              </button>
+            )
+          )}
+
+          <button
+            className="pagination-btn"
+            onClick={() =>
+              setPageIndex((prev) => Math.min(prev + 1, totalPages - 1))
+            }
+            disabled={pageIndex === totalPages - 1}
+          >
+            Next
+          </button>
+        </div>
       </div>
+      {/* </div> */}
     </>
   );
 }
