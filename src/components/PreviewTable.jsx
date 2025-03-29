@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Papa from "papaparse";
-import ordersCSV from "../data/customers.csv"; // Default CSV file for initial data loading
+import ordersCSV from "../data/orders.csv"; // Default CSV file for initial data loading
 import { saveAs } from "file-saver"; // Utility for exporting data as files
 import { Download } from "lucide-react"; // Icon component for download buttons
 
