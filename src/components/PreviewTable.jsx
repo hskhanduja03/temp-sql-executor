@@ -4,25 +4,31 @@ import ordersCSV from "../data/orders.csv"; // Default CSV
 import { saveAs } from "file-saver"; // For exporting JSON
 import { Download } from "lucide-react";
 
-export default function PreviewTable() {
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+export default function PreviewTable({ mockData, filename }) {
+  const [data, setData] = useState(mockData || []);
+  const [filteredData, setFilteredData] = useState(mockData || []);
   const [sortConfig, setSortConfig] = useState({
     key: null,
     direction: "none",
   });
   const [searchQuery, setSearchQuery] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
-  const [selectedFile, setSelectedFile] = useState("Orders.csv");
+  const [selectedFile, setSelectedFile] = useState(mockData ? "Mock Data" : "Orders.csv");
   const pageSize = 5;
 
   useEffect(() => {
-    fetch(ordersCSV)
-      .then((res) => res.text())
-      .then((text) => parseCSV(text));
-  }, []);
+    if (!mockData) {
+      fetch(ordersCSV)
+        .then((res) => res.text())
+        .then((text) => parseCSV(text));
+    } else {
+      setData(mockData);
+      setFilteredData(mockData);
+      setPageIndex(0);
+    }
+  }, [mockData]);
 
-  //To parse 
+  //To parse
   const parseCSV = (csvText) => {
     Papa.parse(csvText, {
       header: true,
@@ -53,8 +59,8 @@ export default function PreviewTable() {
         ? 1
         : -1
       : a[sortConfig.key] < b[sortConfig.key]
-      ? 1
-      : -1;
+        ? 1
+        : -1;
   });
 
   useEffect(() => {
@@ -100,7 +106,7 @@ export default function PreviewTable() {
 
   const getPaginationNumbers = () => {
     const pageNumbers = [];
-    const maxVisiblePages = 2; 
+    const maxVisiblePages = 2;
 
     if (totalPages <= 7) {
       return [...Array(totalPages).keys()].map((i) => i + 1);
@@ -131,18 +137,20 @@ export default function PreviewTable() {
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h2 className="query-title">File Preview</h2>
-        <div className="file-upload-container">
-          <label className="custom-file-upload">
-            <input
-              type="file"
-              className="file-input"
-              accept=".csv"
-              onChange={handleFileUpload}
-            />
-            📂 Upload
-          </label>
-        </div>
+        {filename==undefined ? (<h2 className="query-title">File Preview</h2>) : ""}
+        {!mockData && (
+          <div className="file-upload-container">
+            <label className="custom-file-upload">
+              <input
+                type="file"
+                className="file-input"
+                accept=".csv"
+                onChange={handleFileUpload}
+              />
+              📂 Upload
+            </label>
+          </div>
+        )}
       </div>
       <div className="table-container">
         <div className="table-header-section">
@@ -153,17 +161,17 @@ export default function PreviewTable() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          {selectedFile && (
+          {selectedFile && filename && (
             <b>
               File : <i>{selectedFile}</i>
             </b>
           )}
           <div className="header-actions-right">
-            <button className="export-btn" onClick={exportCSV}>
+            <button className="export-btn" onClick={exportCSV} disabled={!filteredData.length}>
               <Download size={18} />
               Export CSV
             </button>
-            <button className="export-btn" onClick={exportJSON}>
+            <button className="export-btn" onClick={exportJSON} disabled={!filteredData.length}>
               <Download size={18} />
               Export JSON
             </button>
@@ -187,8 +195,8 @@ export default function PreviewTable() {
                           (sortConfig.direction === "asc"
                             ? "🔼"
                             : sortConfig.direction === "desc"
-                            ? "🔽"
-                            : "")}
+                              ? "🔽"
+                              : "")}
                       </div>
                     </th>
                   ))}

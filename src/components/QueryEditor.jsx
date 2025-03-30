@@ -21,6 +21,7 @@ import {
 import { useQueryHistory } from "../Context/QueryHistoryContext";
 import { useSearchParams } from "react-router-dom";
 import { useQueryLibraryContext } from "../Context/QueryLibraryContext";
+import PreviewTable from "./PreviewTable";
 
 const QueryEditor = () => {
   const monaco = useMonaco();
@@ -29,23 +30,35 @@ const QueryEditor = () => {
     {
       id: 1,
       filename: "Query1.sql",
-      query: `/*Example SQL Query*/
-SELECT *
+      query: `/*Example SQL Query 1: Find active users created in March 2025*/
+SELECT user_id, username, first_name, last_name, email, city, country, created_at, last_login
 FROM users
-WHERE user_id > 100
-AND status = 'active'
-ORDER BY last_login DESC
-LIMIT 20;
+WHERE status = 'active'
+AND created_at >= '2025-03-01'
+AND created_at < '2025-04-01'
+ORDER BY created_at;
       `,
       result: null,
     },
     {
       id: 2,
       filename: "Query2.sql",
-      query: `/*Example SQL Query*/
-SELECT *
-FROM transport
-Where happy = 'active'
+      query: `/*Example SQL Query 2: Get product names and their categories*/
+SELECT p.product_name, c.category_name
+FROM products p
+JOIN categories c ON p.category_id = c.category_id;
+      `,
+      result: null,
+    },
+    {
+      id: 3,
+      filename: "Query3.sql",
+      query: `/*Example SQL Query 3: Count the number of orders placed each day in March 2025*/
+SELECT DATE(order_date) AS order_day, COUNT(*) AS total_orders
+FROM orders
+WHERE order_date >= '2025-03-01' AND order_date < '2025-04-01'
+GROUP BY DATE(order_date)
+ORDER BY DATE(order_date);
       `,
       result: null,
     },
@@ -119,16 +132,114 @@ Where happy = 'active'
       let mockResponse = [];
 
       if (activeTab === 1)
-        mockResponse = { id: 1, name: "John Doe", email: "john@example.com" };
+        mockResponse =[
+          {
+            user_id: 105,
+            username: "coderGuru",
+            first_name: "Dev",
+            last_name: "Sharma",
+            email: "guru@example.com",
+            city: "Mumbai",
+            country: "India",
+            created_at: "2025-03-03T11:00:00Z",
+            last_login: "2025-03-29T20:15:00Z",
+          },
+          {
+            user_id: 108,
+            username: "webWiz",
+            first_name: "Priya",
+            last_name: "Verma",
+            email: "priya@example.com",
+            city: "Delhi",
+            country: "India",
+            created_at: "2025-03-07T09:30:00Z",
+            last_login: "2025-03-28T14:00:00Z",
+          },
+          {
+            user_id: 112,
+            username: "dataNinja",
+            first_name: "Rahul",
+            last_name: "Kumar",
+            email: "ninja@example.com",
+            city: "Bangalore",
+            country: "India",
+            created_at: "2025-03-10T15:45:00Z",
+            last_login: "2025-03-30T01:20:00Z",
+          },
+          {
+            user_id: 115,
+            username: "designQueen",
+            first_name: "Sneha",
+            last_name: "Patel",
+            email: "sneha@example.com",
+            city: "Ahmedabad",
+            country: "India",
+            created_at: "2025-03-14T12:00:00Z",
+            last_login: "2025-03-27T18:50:00Z",
+          },
+          {
+            user_id: 118,
+            username: "techExplorer",
+            first_name: "Vikram",
+            last_name: "Singh",
+            email: "explorer@example.com",
+            city: "Chennai",
+            country: "India",
+            created_at: "2025-03-18T17:15:00Z",
+            last_login: "2025-03-29T11:30:00Z",
+          },
+          {
+            user_id: 121,
+            username: "codeAlchemist",
+            first_name: "Anjali",
+            last_name: "Gupta",
+            email: "anjali@example.com",
+            city: "Kolkata",
+            country: "India",
+            created_at: "2025-03-21T08:45:00Z",
+            last_login: "2025-03-26T09:00:00Z",
+          },
+          {
+            user_id: 125,
+            username: "codeMaster",
+            first_name: "Rohan",
+            last_name: "Joshi",
+            email: "master@example.com",
+            city: "Pune",
+            country: "India",
+            created_at: "2025-03-25T14:30:00Z",
+            last_login: "2025-03-30T03:45:00Z",
+          },
+          {
+            user_id: 128,
+            username: "logicPro",
+            first_name: "Deepika",
+            last_name: "Yadav",
+            email: "deepika@example.com",
+            city: "Jaipur",
+            country: "India",
+            created_at: "2025-03-29T10:00:00Z",
+            last_login: "2025-03-29T22:55:00Z",
+          },
+        ];
       if (activeTab === 2)
-        mockResponse = {
-          id: 2,
-          name: "Hello Ji",
-          email: "HelloJi@example.com",
-        };
+        mockResponse = [
+          { product_name: "Laptop Pro", category_name: "Electronics" },
+          { product_name: "Wireless Mouse", category_name: "Electronics" },
+          { product_name: "Cotton T-Shirt", category_name: "Apparel" },
+          { product_name: "Running Shoes", category_name: "Apparel" },
+          { product_name: "The Great Novel", category_name: "Books" },
+        ];
       if (activeTab === 3)
-        mockResponse = { id: 3, name: "Harmeet", email: "harmeet@example.com" };
-
+        mockResponse = [
+          { order_day: "2025-03-03", total_orders: 5 },
+          { order_day: "2025-03-03", total_orders: 8 },
+          { order_day: "2025-03-10", total_orders: 12 },
+          { order_day: "2025-03-10", total_orders: 7 },
+          { order_day: "2025-03-17", total_orders: 9 },
+          { order_day: "2025-03-24", total_orders: 15 },
+          { order_day: "2025-03-31", total_orders: 6 },
+        ];
       setTabs((prev) =>
         prev.map((tab) =>
           tab.id === activeTab ? { ...tab, result: mockResponse } : tab
@@ -414,13 +525,13 @@ Where happy = 'active'
                     <Expand width={"1rem"} />
                   )}
                 </button>
-                <button>
+                <button onClick={() => setSharing(true)}>
                   <Share2 width={"1rem"} />
                 </button>
               </div>
             </div>
             <Editor
-              height={"75vh"}
+              height={"70vh"}
               width={"80vw"}
               defaultLanguage="sql"
               theme="vibrant-ink"
@@ -699,33 +810,16 @@ Where happy = 'active'
       {tabs.find((tab) => tab.id === activeTab)?.result && (
         <div className="query-results">
           <h2>Query Result:</h2>
-          <pre>
+          {/* <pre>
             {JSON.stringify(
               tabs.find((tab) => tab.id === activeTab)?.result,
               null,
               2
             )}
-          </pre>
-        </div>
+          </pre> */}
+          <PreviewTable filename={false} mockData={tabs.find((tab) => tab.id === activeTab)?.result} />
+          </div>
       )}
-
-      {/* Controls */}
-      {/* <div className="query-controls">
-        
-        <div className="query-settings">
-          <span className="label">Database:</span>
-          <select className="dropdown">
-            <option>production_db</option>
-            <option>development_db</option>
-          </select>
-          <span className="label">Timeout:</span>
-          <select className="dropdown">
-            <option>10s</option>
-            <option>30s</option>
-          </select>
-          <Settings size={20} className="settings-icon" />
-        </div>
-      </div> */}
     </>
   );
 };

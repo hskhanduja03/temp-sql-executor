@@ -310,8 +310,9 @@ Button:focus {
   position: fixed;
   top: 2px;
   left: 2px;
-  z-index: 9999;
+  z-index: 999;
   background-color: white;
+  max-width: 100%;
 }
 .filenameInput {
   min-width: 150px; /* Ensures width is more than content */
