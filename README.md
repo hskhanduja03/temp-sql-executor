@@ -69,7 +69,7 @@ The query editor uses **Monaco Editor**, the same editor used in VS Code, provid
 ### 🔍 **Measuring Page Load Time**
 To evaluate SQL Runner’s performance, various tools and techniques were used:
 - **Lighthouse in Chrome DevTools** – Provided performance insights and calculated the **Largest Contentful Paint (LCP)** at approximately **2s**.
-- **React Profiler** – Showed that the **App component** was taking around **18s** to render initially due to inefficient state management.
+- **React Profiler** – Showed that the **App component** was taking around **18ms** to render initially due to inefficient state management.
 
 ### ⚡ **Optimizations Implemented**
 To enhance performance and reduce the initial load time:
