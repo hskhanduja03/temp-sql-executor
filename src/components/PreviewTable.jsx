@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo, useMemo } from "react";
 import Papa from "papaparse";
 import ordersCSV from "../data/orders.csv"; // Default CSV
 import { saveAs } from "file-saver"; // For exporting JSON
 import { Download } from "lucide-react";
 
-export default function PreviewTable({ mockData, filename }) {
+const PreviewTable = memo(({ mockData, filename }) => {
   const [data, setData] = useState(mockData || []);
   const [filteredData, setFilteredData] = useState(mockData || []);
-  const [sortConfig, setSortConfig] = useState({
-    key: null,
-    direction: "none",
-  });
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "none" });
   const [searchQuery, setSearchQuery] = useState("");
   const [pageIndex, setPageIndex] = useState(0);
   const [selectedFile, setSelectedFile] = useState(mockData ? "Mock Data" : "Orders.csv");
@@ -28,7 +25,6 @@ export default function PreviewTable({ mockData, filename }) {
     }
   }, [mockData]);
 
-  //To parse
   const parseCSV = (csvText) => {
     Papa.parse(csvText, {
       header: true,
@@ -52,16 +48,28 @@ export default function PreviewTable({ mockData, filename }) {
     });
   };
 
-  const sortedData = [...filteredData].sort((a, b) => {
-    if (!sortConfig.key || sortConfig.direction === "none") return 0;
-    return sortConfig.direction === "asc"
-      ? a[sortConfig.key] > b[sortConfig.key]
-        ? 1
-        : -1
-      : a[sortConfig.key] < b[sortConfig.key]
-        ? 1
-        : -1;
-  });
+  const sortedData = useMemo(() => {
+    if (!sortConfig.key || sortConfig.direction === "none") {
+      return [...filteredData];
+    }
+    return [...filteredData].sort((a, b) => {
+      const valueA = a[sortConfig.key];
+      const valueB = b[sortConfig.key];
+
+      if (valueA === null || valueA === undefined) return sortConfig.direction === "asc" ? 1 : -1;
+      if (valueB === null || valueB === undefined) return sortConfig.direction === "asc" ? -1 : 1;
+
+      if (typeof valueA === 'string' && typeof valueB === 'string') {
+        return sortConfig.direction === "asc"
+          ? valueA.localeCompare(valueB)
+          : valueB.localeCompare(valueA);
+      }
+
+      return sortConfig.direction === "asc"
+        ? valueA > valueB ? 1 : -1
+        : valueA < valueB ? 1 : -1;
+    });
+  }, [filteredData, sortConfig]);
 
   useEffect(() => {
     const filtered = data.filter((row) =>
@@ -83,61 +91,63 @@ export default function PreviewTable({ mockData, filename }) {
     }
   };
 
-  const paginatedData = sortedData.slice(
-    pageIndex * pageSize,
-    (pageIndex + 1) * pageSize
-  );
+  const paginatedData = useMemo(() => {
+    return sortedData.slice(
+      pageIndex * pageSize,
+      (pageIndex + 1) * pageSize
+    );
+  }, [sortedData, pageIndex, pageSize]);
 
-  // Export CSV
   const exportCSV = () => {
     const csv = Papa.unparse(filteredData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     saveAs(blob, "filtered_data.csv");
   };
 
-  // Export JSON
   const exportJSON = () => {
     const json = JSON.stringify(filteredData, null, 2);
     const blob = new Blob([json], { type: "application/json" });
     saveAs(blob, "filtered_data.json");
   };
 
-  const totalPages = Math.ceil(filteredData.length / pageSize);
+  const totalPages = useMemo(() => Math.ceil(filteredData.length / pageSize), [filteredData, pageSize]);
 
-  const getPaginationNumbers = () => {
-    const pageNumbers = [];
-    const maxVisiblePages = 2;
+  const getPaginationNumbers = useMemo(() => {
+    return () => {
+      const pageNumbers = [];
+      const maxVisiblePages = 2;
 
-    if (totalPages <= 7) {
-      return [...Array(totalPages).keys()].map((i) => i + 1);
-    }
+      if (totalPages <= 7) {
+        return [...Array(totalPages).keys()].map((i) => i + 1);
+      }
 
-    pageNumbers.push(1, 2);
+      pageNumbers.push(1, 2);
 
-    if (pageIndex > 3) {
-      pageNumbers.push("...");
-    }
+      if (pageIndex > 3) {
+        pageNumbers.push("...");
+      }
 
-    const start = Math.max(3, pageIndex);
-    const end = Math.min(totalPages - 2, pageIndex + maxVisiblePages);
+      const start = Math.max(3, pageIndex);
+      const end = Math.min(totalPages - 2, pageIndex + maxVisiblePages);
 
-    for (let i = start; i <= end; i++) {
-      pageNumbers.push(i);
-    }
+      for (let i = start; i <= end; i++) {
+        pageNumbers.push(i);
+      }
 
-    if (pageIndex < totalPages - 4) {
-      pageNumbers.push("...");
-    }
+      if (pageIndex < totalPages - 4) {
+        pageNumbers.push("...");
+      }
 
-    pageNumbers.push(totalPages - 1, totalPages);
+      pageNumbers.push(totalPages - 1, totalPages);
 
-    return pageNumbers;
-  };
+      return pageNumbers;
+    };
+  }, [totalPages, pageIndex]);
 
   return (
     <>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        {filename==undefined ? (<h2 className="query-title">File Preview</h2>) : ""}
+        {filename === undefined ? (<h2 className="query-title">File Preview</h2>) : ""}
         {!mockData && (
           <div className="file-upload-container">
             <label className="custom-file-upload">
@@ -147,7 +157,7 @@ export default function PreviewTable({ mockData, filename }) {
                 accept=".csv"
                 onChange={handleFileUpload}
               />
-              📂 Upload
+              <Download size={18} /> Upload
             </label>
           </div>
         )}
@@ -254,7 +264,8 @@ export default function PreviewTable({ mockData, filename }) {
           </button>
         </div>
       </div>
-      {/* </div> */}
     </>
   );
-}
+});
+
+export default PreviewTable;

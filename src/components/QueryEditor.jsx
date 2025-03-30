@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Editor, { useMonaco } from "@monaco-editor/react";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -22,6 +22,7 @@ import { useQueryHistory } from "../Context/QueryHistoryContext";
 import { useSearchParams } from "react-router-dom";
 import { useQueryLibraryContext } from "../Context/QueryLibraryContext";
 import PreviewTable from "./PreviewTable";
+import { debounce } from "lodash";
 
 const QueryEditor = () => {
   const monaco = useMonaco();
@@ -70,10 +71,24 @@ ORDER BY DATE(order_date);
   const [isExpanded, setIsExpanded] = useState(false);
   const [sharing, setSharing] = useState(false);
 
+  //running a query through history
   const { history, setHistory } = useQueryHistory();
   const [searchParams] = useSearchParams();
   const queryParam = searchParams.get("query");
   const queryName = searchParams.get("name");
+
+  //  Implement debouncing  
+  const updateQuery = useCallback(
+    debounce((value) => {
+        setTabs((prev) =>
+            prev.map((tab) =>
+                tab.id === activeTab ? { ...tab, query: value } : tab
+            )
+        );
+    }, 300), 
+    [activeTab, setTabs]
+);
+
 
   useEffect(() => {
     if (queryParam) {
@@ -516,7 +531,7 @@ ORDER BY DATE(order_date);
               </div>
               <div className="query-editor-top-right">
                 <button onClick={handleCopy}>
-                  <Copy />
+                  <Copy size={16} />
                 </button>
                 <button onClick={toggleExpand}>
                   {isExpanded ? (
@@ -536,13 +551,7 @@ ORDER BY DATE(order_date);
               defaultLanguage="sql"
               theme="vibrant-ink"
               value={tabs.find((tab) => tab.id === activeTab)?.query}
-              onChange={(value) =>
-                setTabs((prev) =>
-                  prev.map((tab) =>
-                    tab.id === activeTab ? { ...tab, query: value } : tab
-                  )
-                )
-              }
+              onChange={updateQuery}
               options={{
                 fontSize: 14,
                 fontLigatures: true,
@@ -721,13 +730,7 @@ ORDER BY DATE(order_date);
             defaultLanguage="sql"
             theme="vibrant-ink"
             value={tabs.find((tab) => tab.id === activeTab)?.query}
-            onChange={(value) =>
-              setTabs((prev) =>
-                prev.map((tab) =>
-                  tab.id === activeTab ? { ...tab, query: value } : tab
-                )
-              )
-            }
+            onChange={updateQuery}
             options={{
               fontSize: 14,
               fontLigatures: true,
