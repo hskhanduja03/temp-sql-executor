@@ -6,7 +6,8 @@ import { QueryLibraryProvider } from "./Context/QueryLibraryContext";
 import QueryEditor from "./components/QueryEditor";
 import Dashboard from "./pages/Dashboard";
 import "./styles/global.css"
-// ✅ Lazy-loading only components not needed on initial page
+import useTitle from "./hooks/titleHook";
+//  Lazy-loading only components not needed on initial page
 const QueryTable = lazy(() => import("./components/QueryTable"));
 const PreviewTable = lazy(() => import("./components/PreviewTable"));
 const QueryHistory = lazy(() => import("./components/QueryHistory"));
@@ -17,6 +18,7 @@ function App() {
     <QueryHistoryProvider>
       <QueryLibraryProvider>
         <Router>
+      <TitleUpdater />
           <Routes>
             <Route path="/" element={<Layout />}>
               <Route
@@ -57,6 +59,11 @@ function App() {
       </QueryLibraryProvider>
     </QueryHistoryProvider>
   );
+}
+
+function TitleUpdater() {
+  useTitle(); 
+  return null;
 }
 
 export default App;
